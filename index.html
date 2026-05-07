@@ -1,0 +1,2346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="HCI Explorer">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="HCI Explorer">
+    <link rel="manifest" href="manifest.json">
+    <title>Interactive Journeys: HCI & Usability Engineering</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --hci-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--gradient);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+            animation: fadeIn 0.5s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--gradient);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+            border-radius: 0 0 50px 50px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: move 20s linear infinite;
+        }
+
+        @keyframes move {
+            0% { transform: translate(0,0); }
+            100% { transform: translate(20px,20px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            opacity: 0.95;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(245,158,11,0.4);
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245,158,11,0.6);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(124,58,237,0.6);
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card .hci-theory {
+            font-size: 0.85rem;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Interactive Elements */
+        .interactive-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 3rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .principle-demo {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 15px;
+            transition: all 0.3s;
+            border: 2px solid #e2e8f0;
+        }
+
+        .principle-demo:hover {
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .demo-controls {
+            flex: 1;
+        }
+
+        .demo-display {
+            flex: 1;
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            border: 3px solid var(--primary);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input[type="range"], input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        /* HCI Specific Styles */
+        .hci-badge {
+            display: inline-block;
+            background: var(--hci-gradient);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .theory-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 5px solid var(--info);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .theory-box h4 {
+            color: var(--info);
+            margin-bottom: 0.5rem;
+        }
+
+        .experiment-panel {
+            background: #f0fdf4;
+            border: 2px solid var(--success);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .experiment-panel h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Storage Display */
+        .storage-panel {
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .storage-item {
+            background: rgba(255,255,255,0.1);
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Case Study Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            margin: 2rem 0;
+            position: relative;
+            width: 45%;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 55%;
+        }
+
+        .timeline-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 4px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -13.5%;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -13.5%;
+        }
+
+        /* Fitts's Law Interactive */
+        .fitts-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #f1f5f9;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .fitts-target {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .fitts-target:hover {
+            transform: scale(1.1);
+        }
+
+        .fitts-target.success {
+            background: var(--success) !important;
+        }
+
+        /* Hick's Law Demo */
+        .hicks-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--cols, 3), 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hicks-item {
+            padding: 1.5rem;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .hicks-item:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .hicks-item.correct {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .hicks-item.wrong {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Cognitive Load Meter */
+        .cognitive-meter {
+            width: 100%;
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .cognitive-fill {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 1rem;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Gestalt Principles */
+        .gestalt-demo {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .gestalt-box {
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Everyday Life Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .gallery-item {
+            position: relative;
+            height: 320px;
+            background: var(--gradient);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px) rotate(1deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .gallery-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 1.5rem;
+            transform: translateY(100%);
+            transition: all 0.3s;
+        }
+
+        .gallery-item:hover .gallery-content {
+            transform: translateY(0);
+        }
+
+        /* Reflection Form */
+        .reflection-form {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+
+        .rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2.5rem;
+            cursor: pointer;
+        }
+
+        .star {
+            color: #cbd5e1;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .star.active, .star:hover {
+            color: var(--accent);
+            transform: scale(1.2);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.3);
+            z-index: 999;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 2px dotted var(--primary);
+            cursor: help;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background: var(--dark);
+            color: white;
+            text-align: left;
+            padding: 1rem;
+            border-radius: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: all 0.3s;
+            z-index: 2000;
+            font-weight: 600;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                width: calc(100% - 40px);
+                left: 40px !important;
+            }
+            
+            .timeline-dot {
+                left: -30px !important;
+            }
+
+            .gestalt-demo {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-demo {
+                flex-direction: column;
+            }
+        }
+
+        /* Animations */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Comparison Slider */
+        .comparison-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .comparison-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #64748b;
+        }
+
+        .comparison-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            overflow: hidden;
+            transition: width 0.3s;
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: white;
+            left: 50%;
+            cursor: ew-resize;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .slider-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Accessibility High Contrast Mode */
+        .high-contrast {
+            filter: contrast(150%);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
+        }
+
+        /* Heatmap overlay for eye tracking simulation */
+        .heatmap-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+            background: radial-gradient(circle at 30% 40%, rgba(255,0,0,0.6) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(255,165,0,0.4) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 80%, rgba(255,255,0,0.3) 0%, transparent 30%);
+        }
+
+        .heatmap-active .heatmap-overlay {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <span>🧠</span>
+                <span>HCI Explorer</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')" class="nav-link active" data-page="home">Home</a></li>
+                <li><a href="#" onclick="showPage('principles')" class="nav-link" data-page="principles">HCI Principles</a></li>
+                <li><a href="#" onclick="showPage('laws')" class="nav-link" data-page="laws">Interaction Laws</a></li>
+                <li><a href="#" onclick="showPage('casestudy')" class="nav-link" data-page="casestudy">Case Studies</a></li>
+                <li><a href="#" onclick="showPage('everyday')" class="nav-link" data-page="everyday">Everyday HCI</a></li>
+                <li><a href="#" onclick="showPage('reflection')" class="nav-link" data-page="reflection">Reflection</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page 1: Homepage -->
+    <div id="home" class="page active">
+        <div class="hero">
+            <div class="hero-content">
+                <h1 class="float">Human-Computer Interaction</h1>
+                <p>Explore the cognitive science, design principles, and empirical laws that shape how humans interact with technology. Based on foundational HCI research by Norman, Fitts, Hick, and others.</p>
+                <button class="btn pulse" onclick="showPage('principles')">Begin Exploration</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="theory-box">
+                <h4>🎓 What is HCI?</h4>
+                <p>Human-Computer Interaction (HCI) is a multidisciplinary field focusing on the design of computer technology and, in particular, the interaction between humans (users) and computers. It combines elements of psychology, cognitive science, design, and computer science.</p>
+            </div>
+
+            <h2 style="text-align: center; margin-bottom: 1rem; font-size: 2.5rem;">Learning Modules</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 3rem;">Interactive experiments based on established HCI research</p>
+            
+            <div class="card-grid">
+                <div class="card" onclick="showPage('principles')">
+                    <div class="card-icon">🧠</div>
+                    <div class="hci-theory">Cognitive Psychology</div>
+                    <h3>Design Principles</h3>
+                    <p>Explore Norman's Design Principles: Visibility, Feedback, Constraints, Mapping, and Consistency through interactive cognitive demos.</p>
+                </div>
+                <div class="card" onclick="showPage('laws')">
+                    <div class="card-icon">📊</div>
+                    <div class="hci-theory">Quantitative Models</div>
+                    <h3>Interaction Laws</h3>
+                    <p>Experiment with Fitts's Law, Hick's Law, and the Power Law of Practice. Measure your own performance against mathematical models.</p>
+                </div>
+                <div class="card" onclick="showPage('casestudy')">
+                    <div class="card-icon">🔬</div>
+                    <div class="hci-theory">Empirical Research</div>
+                    <h3>Case Studies</h3>
+                    <p>Analyze real-world usability engineering successes and failures using heuristic evaluation and cognitive walkthrough methods.</p>
+                </div>
+                <div class="card" onclick="showPage('everyday')">
+                    <div class="card-icon">🏠</div>
+                    <div class="hci-theory">Ecological Psychology</div>
+                    <h3>Everyday Artifacts</h3>
+                    <p>Apply Gibson's theory of affordances to everyday objects. Understand perceived vs. actual affordances in physical and digital design.</p>
+                </div>
+                <div class="card" onclick="showPage('reflection')">
+                    <div class="card-icon">📈</div>
+                    <div class="hci-theory">Metacognition</div>
+                    <h3>Learning Analytics</h3>
+                    <p>Track your learning progress, export data for analysis, and generate comprehensive reports based on your interaction data.</p>
+                </div>
+            </div>
+
+            <div class="interactive-section">
+                <h2>🎯 Initial Usability Assessment</h2>
+                <p>Before we begin, test your intuition about fundamental HCI concepts:</p>
+                
+                <div class="comparison-container" id="homeComparison">
+                    <div class="comparison-image" style="background: #fecaca;">
+                        <div style="text-align: center; padding: 2rem;">
+                            <h3 style="margin-bottom: 1rem; color: #991b1b;">Poor Mapping</h3>
+                            <div style="display: flex; gap: 1rem; flex-direction: row-reverse; margin: 2rem 0;">
+                                <button style="padding: 1rem 2rem; background: #dc2626; color: white; border: none; border-radius: 5px; font-size: 1.2rem;">Delete</button>
+                                <button style="padding: 1rem 2rem; background: #16a34a; color: white; border: none; border-radius: 5px; font-size: 1.2rem;">Save</button>
+                            </div>
+                            <p style="color: #7f1d1d; font-size: 0.9rem;">Violates: Mapping, Consistency</p>
+                        </div>
+                    </div>
+                    <div class="comparison-overlay" id="goodDesign" style="background: #bbf7d0;">
+                        <div style="text-align: center; padding: 2rem;">
+                            <h3 style="margin-bottom: 1rem; color: #166534;">Good Mapping</h3>
+                            <div style="display: flex; gap: 1rem; margin: 2rem 0;">
+                                <button style="padding: 1rem 2rem; background: #16a34a; color: white; border: none; border-radius: 5px; font-size: 1.2rem;">Save</button>
+                                <button style="padding: 1rem 2rem; background: #dc2626; color: white; border: none; border-radius: 5px; font-size: 1.2rem;">Delete</button>
+                            </div>
+                            <p style="color: #166534; font-size: 0.9rem;">Follows: Natural Mapping, Standards</p>
+                        </div>
+                    </div>
+                    <div class="slider-handle" id="sliderHandle">
+                        <div class="slider-button">↔</div>
+                    </div>
+                </div>
+                <p style="text-align: center; color: #64748b;">Drag to compare: Good design follows natural mapping (left-positive, right-negative)</p>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="totalInteractions">0</div>
+                    <div class="metric-label">Interactions Recorded</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="timeSpent">0:00</div>
+                    <div class="metric-label">Time Engaged</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="pagesVisited">1/6</div>
+                    <div class="metric-label">Pages Explored</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="experimentsRun">0</div>
+                    <div class="metric-label">Experiments Completed</div>
+                </div>
+            </div>
+
+            <div class="storage-panel">
+                <h3>💾 Session Data Log (LocalStorage)</h3>
+                <div id="sessionData">No HCI data recorded yet. Interact with experiments to generate data.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2: HCI Principles -->
+    <div id="principles" class="page">
+        <div class="hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="hero-content">
+                <h1>Norman's Design Principles</h1>
+                <p>Seven principles for transforming difficult tasks into simple ones, based on cognitive psychology</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('visibility')">Visibility</button>
+                <button class="tab" onclick="showTab('feedback')">Feedback</button>
+                <button class="tab" onclick="showTab('constraints')">Constraints</button>
+                <button class="tab" onclick="showTab('mapping')">Mapping</button>
+                <button class="tab" onclick="showTab('consistency')">Consistency</button>
+                <button class="tab" onclick="showTab('affordances')">Affordances</button>
+            </div>
+
+            <!-- Visibility Tab -->
+            <div id="visibility" class="tab-content active">
+                <div class="theory-box">
+                    <h4>📚 Theoretical Basis</h4>
+                    <p><strong>Visibility</strong> (Norman, 1988): The more visible functions are, the more likely users will be able to know what to do next. Invisible functions reduce discoverability and increase cognitive load.</p>
+                </div>
+                
+                <div class="interactive-section">
+                    <h2>🔦 Visibility Experiment</h2>
+                    <div class="principle-demo">
+                        <div class="demo-controls">
+                            <h3>Control Visibility Level</h3>
+                            <p>Adjust opacity to simulate visibility conditions:</p>
+                            <input type="range" min="0" max="100" value="50" id="visibilitySlider" oninput="updateVisibility(this.value)">
+                            <p>Visibility: <span id="visibilityValue">50%</span></p>
+                            <div style="margin-top: 1rem; padding: 1rem; background: #f0f9ff; border-radius: 10px;">
+                                <strong>Cognitive Load:</strong>
+                                <div class="cognitive-meter">
+                                    <div class="cognitive-fill" id="cognitiveLoad" style="width: 50%; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);">50%</div>
+                                </div>
+                                <small>High cognitive load occurs when users must remember invisible options</small>
+                            </div>
+                            <button class="btn" onclick="recordMetric('visibility_test', document.getElementById('visibilitySlider').value)" style="margin-top: 1rem;">Record Data Point</button>
+                        </div>
+                        <div class="demo-display" id="visibilityDisplay" style="background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.5);">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">💡</div>
+                            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">Light Switch Control</p>
+                            <div style="display: flex; gap: 1rem; opacity: 0.5;" id="switchControls">
+                                <button style="padding: 0.5rem 1rem; background: #16a34a; color: white; border: none; border-radius: 5px;">ON</button>
+                                <button style="padding: 0.5rem 1rem; background: #dc2626; color: white; border: none; border-radius: 5px;">OFF</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Tab -->
+            <div id="feedback" class="tab-content">
+                <div class="theory-box">
+                    <h4>📚 Theoretical Basis</h4>
+                    <p><strong>Feedback</strong> (Norman, 1988): Sending information back to the user about what action has been performed and what result has been accomplished. Essential for learning and error prevention.</p>
+                </div>
+
+                <div class="interactive-section">
+                    <h2>📢 Feedback Modalities Experiment</h2>
+                    <div class="principle-demo">
+                        <div class="demo-controls">
+                            <h3>Test Different Feedback Types</h3>
+                            <p>Click buttons to experience feedback hierarchies:</p>
+                            <button class="btn" onclick="showFeedback('none')" style="margin: 0.5rem; background: #64748b; display: block; width: 100%;">No Feedback (Error)</button>
+                            <button class="btn" onclick="showFeedback('visual')" style="margin: 0.5rem; background: var(--primary); display: block; width: 100%;">Visual Only</button>
+                            <button class="btn" onclick="showFeedback('multimodal')" style="margin: 0.5rem; background: var(--success); display: block; width: 100%;">Multimodal (Best)</button>
+                            <div style="margin-top: 1rem; font-size: 0.9rem; color: #64748b;">
+                                <strong>Response Time:</strong> <span id="responseTime">-</span>ms<br>
+                                <strong>Error Rate:</strong> <span id="errorRate">-</span>%
+                            </div>
+                        </div>
+                        <div class="demo-display" id="feedbackDisplay">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">⌨️</div>
+                            <p style="font-size: 1.2rem;">System Status: <span id="systemStatus" style="font-weight: bold; color: #64748b;">Idle</span></p>
+                            <div id="feedbackVisual" style="margin-top: 1rem; padding: 1rem; border-radius: 10px; background: #f1f5f9; display: none;">
+                                Visual Confirmation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Constraints Tab -->
+            <div id="constraints" class="tab-content">
+                <div class="theory-box">
+                    <h4>📚 Theoretical Basis</h4>
+                    <p><strong>Constraints</strong> (Norman, 1988): Limiting the range of possible actions to guide users toward correct behavior. Types: Physical, Semantic, Cultural, and Logical constraints.</p>
+                </div>
+
+                <div class="interactive-section">
+                    <h2>🚧 Constraint Types Demo</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="padding: 1.5rem; background: #f0fdf4; border-radius: 10px; border: 2px solid var(--success);">
+                            <h4>Physical</h4>
+                            <p>USB connector shape prevents incorrect insertion</p>
+                            <div style="width: 60px; height: 30px; background: #cbd5e1; margin: 1rem auto; border-radius: 15px; position: relative;">
+                                <div style="position: absolute; top: 50%; left: 20%; transform: translateY(-50%); width: 20px; height: 2px; background: white;"></div>
+                            </div>
+                        </div>
+                        <div style="padding: 1.5rem; background: #eff6ff; border-radius: 10px; border: 2px solid var(--info);">
+                            <h4>Semantic</h4>
+                            <p>Scissors design suggests finger placement</p>
+                            <div style="font-size: 3rem; text-align: center;">✂️</div>
+                        </div>
+                        <div style="padding: 1.5rem; background: #fef3c7; border-radius: 10px; border: 2px solid var(--warning);">
+                            <h4>Cultural</h4>
+                            <p>Red = Stop, Green = Go (traffic conventions)</p>
+                            <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 1rem;">
+                                <div style="width: 30px; height: 30px; background: #ef4444; border-radius: 50%;"></div>
+                                <div style="width: 30px; height: 30px; background: #10b981; border-radius: 50%;"></div>
+                            </div>
+                        </div>
+                        <div style="padding: 1.5rem; background: #f3e8ff; border-radius: 10px; border: 2px solid var(--secondary);">
+                            <h4>Logical</h4>
+                            <p>Missing puzzle piece indicates placement</p>
+                            <div style="font-size: 3rem; text-align: center;">🧩</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapping Tab -->
+            <div id="mapping" class="tab-content">
+                <div class="theory-box">
+                    <h4>📚 Theoretical Basis</h4>
+                    <p><strong>Natural Mapping</strong> (Norman, 1988): Taking advantage of physical analogies and cultural standards to create immediate understanding. Reduces need for labels and memory.</p>
+                </div>
+
+                <div class="interactive-section">
+                    <h2>🗺️ Stove Control Mapping</h2>
+                    <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4>Poor Mapping</h4>
+                            <div style="background: #fee2e2; padding: 2rem; border-radius: 10px; margin: 1rem 0;">
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                                    <div style="width: 40px; height: 40px; background: #dc2626; border-radius: 50%; margin: 0 auto;"></div>
+                                    <div style="width: 40px; height: 40px; background: #dc2626; border-radius: 50%; margin: 0 auto;"></div>
+                                    <div style="width: 40px; height: 40px; background: #dc2626; border-radius: 50%; margin: 0 auto;"></div>
+                                    <div style="width: 40px; height: 40px; background: #dc2626; border-radius: 50%; margin: 0 auto;"></div>
+                                </div>
+                                <div style="display: flex; justify-content: space-around;">
+                                    <button style="padding: 0.5rem;">A</button>
+                                    <button style="padding: 0.5rem;">B</button>
+                                    <button style="padding: 0.5rem;">C</button>
+                                    <button style="padding: 0.5rem;">D</button>
+                                </div>
+                                <p style="text-align: center; margin-top: 1rem; color: #991b1b; font-size: 0.9rem;">Arbitrary mapping requires labels</p>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4>Natural Mapping</h4>
+                            <div style="background: #dcfce7; padding: 2rem; border-radius: 10px; margin: 1rem 0;">
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 2rem;">
+                                    <div style="width: 50px; height: 50px; background: #dc2626; border-radius: 50%; margin: 0 auto;"></div>
+                                    <div style="width: 50px; height: 50px; background: #dc2626; border-radius: 50%; margin: 0 auto;"></div>
+                                    <div style="width: 50px; height: 50px; background: #dc2626; border-radius: 50%; margin: 0 auto;"></div>
+                                    <div style="width: 50px; height: 50px; background: #dc2626; border-radius: 50%; margin: 0 auto;"></div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;">
+                                    <button style="padding: 0.5rem;">◀️</button>
+                                    <button style="padding: 0.5rem;">▶️</button>
+                                    <button style="padding: 0.5rem;">◀️</button>
+                                    <button style="padding: 0.5rem;">▶️</button>
+                                </div>
+                                <p style="text-align: center; margin-top: 1rem; color: #166534; font-size: 0.9rem;">Spatial correspondence eliminates confusion</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consistency Tab -->
+            <div id="consistency" class="tab-content">
+                <div class="theory-box">
+                    <h4>📚 Theoretical Basis</h4>
+                    <p><strong>Consistency</strong> (Norman, 1988): Similar situations should require similar actions. Reduces learning load and transfer of training. Types: aesthetic, functional, internal, and external consistency.</p>
+                </div>
+
+                <div class="interactive-section">
+                    <h2>🔄 Consistency Recognition Test</h2>
+                    <p>Click the button that matches the standard position for "Submit":</p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 2rem 0; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        <button onclick="checkConsistency(this, false)" style="padding: 1rem; background: #dc2626; color: white; border: none; border-radius: 5px;">Cancel</button>
+                        <button onclick="checkConsistency(this, false)" style="padding: 1rem; background: #f59e0b; color: white; border: none; border-radius: 5px;">Reset</button>
+                        <button onclick="checkConsistency(this, true)" style="padding: 1rem; background: #16a34a; color: white; border: none; border-radius: 5px;">Submit</button>
+                    </div>
+                    <div id="consistencyFeedback" style="text-align: center; padding: 1rem; border-radius: 10px; display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Affordances Tab -->
+            <div id="affordances" class="tab-content">
+                <div class="theory-box">
+                    <h4>📚 Theoretical Basis</h4>
+                    <p><strong>Affordances</strong> (Gibson, 1979; Norman, 1988): The perceived and actual properties of a thing that determine how it could be used. Perceived affordances are especially important in UI design.</p>
+                </div>
+
+                <div class="interactive-section">
+                    <h2>🪑 Affordance Analysis</h2>
+                    <div class="gestalt-demo">
+                        <div class="gestalt-box" onclick="analyzeAffordance('chair')">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">🪑</div>
+                            <h4>Chair</h4>
+                            <p style="color: #64748b; font-size: 0.9rem;">Click to analyze affordances</p>
+                        </div>
+                        <div class="gestalt-box" onclick="analyzeAffordance('button')">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">🔘</div>
+                            <h4>Button</h4>
+                            <p style="color: #64748b; font-size: 0.9rem;">Click to analyze affordances</p>
+                        </div>
+                        <div class="gestalt-box" onclick="analyzeAffordance('knob')">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">🎛️</div>
+                            <h4>Knob</h4>
+                            <p style="color: #64748b; font-size: 0.9rem;">Click to analyze affordances</p>
+                        </div>
+                        <div class="gestalt-box" onclick="analyzeAffordance('text')">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">📝</div>
+                            <h4>Text Field</h4>
+                            <p style="color: #64748b; font-size: 0.9rem;">Click to analyze affordances</p>
+                        </div>
+                    </div>
+                    <div id="affordanceResult" style="margin-top: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 10px; display: none;"></div>
+                </div>
+            </div>
+
+            <div class="interactive-section">
+                <h3>📝 Research Notes</h3>
+                <p>Document your observations on Norman's principles (auto-saved):</p>
+                <textarea id="principleNotes" rows="4" placeholder="Enter your HCI analysis here..." onblur="saveToStorage('principle_notes', this.value)"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: Interaction Laws -->
+    <div id="laws" class="page">
+        <div class="hero" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <div class="hero-content">
+                <h1>Quantitative Interaction Laws</h1>
+                <p>Empirical models predicting human performance in interaction tasks</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('fitts')">Fitts's Law</button>
+                <button class="tab" onclick="showTab('hicks')">Hick's Law</button>
+                <button class="tab" onclick="showTab('power')">Power Law</button>
+                <button class="tab" onclick="showTab('gestalt')">Gestalt Principles</button>
+            </div>
+
+            <!-- Fitts's Law -->
+            <div id="fitts" class="tab-content active">
+                <div class="theory-box">
+                    <h4>📐 Fitts's Law (1954)</h4>
+                    <p><strong>MT = a + b log₂(2D/W)</strong><br>
+                    Movement Time (MT) is a function of distance (D) and target width (W). Index of Difficulty (ID) = log₂(2D/W) measured in bits.</p>
+                </div>
+
+                <div class="experiment-panel">
+                    <h3>🎯 Fitts's Law Experiment</h3>
+                    <p>Click the targets as quickly and accurately as possible. We'll calculate your Index of Difficulty and Movement Time.</p>
+                    
+                    <div class="fitts-container" id="fittsContainer">
+                        <div class="fitts-target" id="fittsTarget" onclick="hitTarget()" style="width: 60px; height: 60px; background: var(--primary);">
+                            Click!
+                        </div>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value" id="fittsMT">0</div>
+                            <div class="metric-label">Movement Time (ms)</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="fittsID">0</div>
+                            <div class="metric-label">Index of Difficulty (bits)</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="fittsTP">0</div>
+                            <div class="metric-label">Throughput (bits/s)</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="fittsErrors">0</div>
+                            <div class="metric-label">Error Rate (%)</div>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="startFittsExperiment()" style="margin-top: 1rem;">Start New Trial</button>
+                    <button class="btn btn-secondary" onclick="exportFittsData()" style="margin-top: 1rem;">Export Data (CSV)</button>
+                </div>
+            </div>
+
+            <!-- Hick's Law -->
+            <div id="hicks" class="tab-content">
+                <div class="theory-box">
+                    <h4>⏱️ Hick's Law (1952)</h4>
+                    <p><strong>RT = a + b log₂(n)</strong><br>
+                    Reaction Time (RT) increases logarithmically with the number of choices (n). This informs menu design and decision architecture.</p>
+                </div>
+
+                <div class="experiment-panel">
+                    <h3>🧠 Hick's Law Demonstration</h3>
+                    <p>Find the green target as fast as possible. Notice how time increases with more options.</p>
+                    
+                    <div style="margin: 2rem 0;">
+                        <label>Number of Choices (n): <span id="hickN">4</span></label>
+                        <input type="range" min="2" max="16" value="4" oninput="updateHickLaw(this.value)">
+                    </div>
+
+                    <div class="hicks-grid" id="hicksGrid" style="--cols: 2;">
+                        <!-- Generated by JS -->
+                    </div>
+
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 10px;">
+                        <h4>Predicted vs. Actual Performance</h4>
+                        <p><strong>Predicted RT:</strong> <span id="predictedRT">0</span>ms (Hick's Law)</p>
+                        <p><strong>Your Average RT:</strong> <span id="actualRT">-</span>ms</p>
+                        <p><strong>Choices:</strong> <span id="currentChoices">4</span></p>
+                    </div>
+
+                    <button class="btn" onclick="startHickTest()" style="margin-top: 1rem;">Start Test</button>
+                </div>
+            </div>
+
+            <!-- Power Law -->
+            <div id="power" class="tab-content">
+                <div class="theory-box">
+                    <h4>📈 Power Law of Practice (Snoddy, 1926)</h4>
+                    <p><strong>T = aP⁻ᵇ + c</strong><br>
+                    Task time (T) decreases as a power function of practice (P). Explains learning curves and expertise development.</p>
+                </div>
+
+                <div class="interactive-section">
+                    <h3>📉 Learning Curve Simulator</h3>
+                    <p>Perform the sequence task multiple times to see your improvement:</p>
+                    
+                    <div style="background: #f8fafc; padding: 2rem; border-radius: 10px; margin: 2rem 0; text-align: center;">
+                        <div id="sequenceTask" style="font-size: 2rem; font-family: monospace; letter-spacing: 1rem; margin: 1rem 0;">
+                            A - S - D - F
+                        </div>
+                        <input type="text" id="sequenceInput" placeholder="Type the sequence..." onkeyup="checkSequence(event)" style="max-width: 300px; text-align: center; font-family: monospace; font-size: 1.2rem;">
+                        <p style="margin-top: 1rem; color: #64748b;">Trial: <span id="trialNum">1</span> | Time: <span id="trialTime">-</span>ms</p>
+                    </div>
+
+                    <div style="height: 300px; background: white; border-radius: 10px; padding: 1rem; position: relative;" id="learningCurveChart">
+                        <canvas id="practiceChart" style="width: 100%; height: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestalt Principles -->
+            <div id="gestalt" class="tab-content">
+                <div class="theory-box">
+                    <h4>🎨 Gestalt Principles (Wertheimer, 1923)</h4>
+                    <p>Humans perceive visual elements as organized patterns rather than individual components. Principles: Proximity, Similarity, Continuity, Closure, Figure-Ground.</p>
+                </div>
+
+                <div class="interactive-section">
+                    <h3>👁️ Visual Perception Demos</h3>
+                    <div class="gestalt-demo">
+                        <div class="gestalt-box" onmouseover="showGestalt('proximity')" onmouseout="hideGestalt()">
+                            <h4>Proximity</h4>
+                            <div style="display: flex; gap: 0.5rem; justify-content: center; margin: 1rem 0;">
+                                <div style="display: flex; gap: 0.2rem;">
+                                    <div style="width: 20px; height: 20px; background: var(--primary); border-radius: 50%;"></div>
+                                    <div style="width: 20px; height: 20px; background: var(--primary); border-radius: 50%;"></div>
+                                </div>
+                                <div style="display: flex; gap: 0.2rem;">
+                                    <div style="width: 20px; height: 20px; background: var(--primary); border-radius: 50%;"></div>
+                                    <div style="width: 20px; height: 20px; background: var(--primary); border-radius: 50%;"></div>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.9rem; color: #64748b;">Elements close together appear grouped</p>
+                        </div>
+                        <div class="gestalt-box" onmouseover="showGestalt('similarity')" onmouseout="hideGestalt()">
+                            <h4>Similarity</h4>
+                            <div style="display: flex; gap: 0.5rem; justify-content: center; margin: 1rem 0;">
+                                <div style="width: 20px; height: 20px; background: var(--primary); border-radius: 50%;"></div>
+                                <div style="width: 20px; height: 20px; background: var(--primary); border-radius: 50%;"></div>
+                                <div style="width: 20px; height: 20px; background: var(--danger); border-radius: 3px;"></div>
+                                <div style="width: 20px; height: 20px; background: var(--primary); border-radius: 50%;"></div>
+                            </div>
+                            <p style="font-size: 0.9rem; color: #64748b;">Similar elements appear grouped</p>
+                        </div>
+                    </div>
+                    <div id="gestaltExplanation" style="margin-top: 2rem; padding: 1.5rem; background: #f0f9ff; border-radius: 10px; display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 4: Case Studies -->
+    <div id="casestudy" class="page">
+        <div class="hero" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <div class="hero-content">
+                <h1>Usability Engineering Case Studies</h1>
+                <p>Heuristic evaluation and empirical analysis of real-world systems</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="timeline">
+                <div class="timeline-item" onclick="showCaseDetail('apple')">
+                    <div class="timeline-dot"></div>
+                    <h3>1984 - Apple Macintosh GUI</h3>
+                    <p>First commercially successful GUI based on cognitive principles</p>
+                    <small>Direct manipulation interfaces</small>
+                </div>
+                
+                <div class="timeline-item" onclick="showCaseDetail('amazon')">
+                    <div class="timeline-dot"></div>
+                    <h3>1999 - Amazon 1-Click</h3>
+                    <p>Removal of interaction steps based on GOMS analysis</p>
+                    <small>Efficiency optimization</small>
+                </div>
+                
+                <div class="timeline-item" onclick="showCaseDetail('healthcare')">
+                    <div class="timeline-dot"></div>
+                    <h3>2000s - Medical Device Errors</h3>
+                    <p>Mode errors and usability failures in safety-critical systems</p>
+                    <small>Human error analysis</small>
+                </div>
+                
+                <div class="timeline-item" onclick="showCaseDetail('iphone')">
+                    <div class="timeline-dot"></div>
+                    <h3>2007 - iPhone Multi-touch</h3>
+                    <p>Natural user interfaces (NUI) removing abstraction layers</p>
+                    <small>Tangible interaction</small>
+                </div>
+                
+                <div class="timeline-item" onclick="showCaseDetail('modern')">
+                    <div class="timeline-dot"></div>
+                    <h3>2020s - AI Interfaces</h3>
+                    <p>Gulf of evaluation challenges in LLM interactions</p>
+                    <small>Explainable AI (XAI)</small>
+                </div>
+            </div>
+
+            <div class="interactive-section" id="caseDetail" style="display: none;">
+                <h2 id="caseTitle">Case Study Analysis</h2>
+                <div id="caseContent"></div>
+                <div style="margin-top: 2rem; padding: 1.5rem; background: #f0f9ff; border-radius: 10px;">
+                    <h4>🔍 Heuristic Evaluation</h4>
+                    <p>Which Nielsen heuristics apply to this case?</p>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-top: 1rem;">
+                        <label><input type="checkbox" onchange="saveHeuristic('visibility')"> Visibility of system status</label>
+                        <label><input type="checkbox" onchange="saveHeuristic('match')"> Match between system and real world</label>
+                        <label><input type="checkbox" onchange="saveHeuristic('control')"> User control and freedom</label>
+                        <label><input type="checkbox" onchange="saveHeuristic('consistency')"> Consistency and standards</label>
+                        <label><input type="checkbox" onchange="saveHeuristic('error')"> Error prevention</label>
+                        <label><input type="checkbox" onchange="saveHeuristic('recognition')"> Recognition rather than recall</label>
+                        <label><input type="checkbox" onchange="saveHeuristic('flexibility')"> Flexibility and efficiency</label>
+                        <label><input type="checkbox" onchange="saveHeuristic('aesthetic')"> Aesthetic and minimalist design</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interactive-section">
+                <h3>🧪 Cognitive Walkthrough Exercise</h3>
+                <div style="background: #f1f5f9; padding: 2rem; border-radius: 10px;">
+                    <h4>Scenario: ATM Interface Redesign</h4>
+                    <p>Walk through the task: "Withdraw $100"</p>
+                    <ol style="margin-left: 2rem; margin-top: 1rem; line-height: 2;">
+                        <li>Will the user try to achieve the right effect? <input type="checkbox" onchange="saveWalkthrough(1)"></li>
+                        <li>Will the user notice the correct action is available? <input type="checkbox" onchange="saveWalkthrough(2)"></li>
+                        <li>Will the user associate the correct action with the effect? <input type="checkbox" onchange="saveWalkthrough(3)"></li>
+                        <li>If the correct action is performed, will the user see progress? <input type="checkbox" onchange="saveWalkthrough(4)"></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 5: Everyday HCI -->
+    <div id="everyday" class="page">
+        <div class="hero" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+            <div class="hero-content">
+                <h1>Ecological Psychology & Design</h1>
+                <p>Gibson's affordances in physical and digital environments</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="gallery">
+                <div class="gallery-item" onclick="showEverydayDetail('doors')">
+                    <div style="height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem;">🚪</div>
+                    <div class="gallery-content">
+                        <h3>Norman Doors</h3>
+                        <p>Affordance vs. Signifier confusion in physical design</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item" onclick="showEverydayDetail('microwave')">
+                    <div style="height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem;">📟</div>
+                    <div class="gallery-content">
+                        <h3>Feature Creep</h3>
+                        <p>Featurism vs. usability in appliance design</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item" onclick="showEverydayDetail('faucets')">
+                    <div style="height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem;">🚰</div>
+                    <div class="gallery-content">
+                        <h3>Mapping Conventions</h3>
+                        <p>Cultural constraints and standardization</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item" onclick="showEverydayDetail('elevators')">
+                    <div style="height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem;">🛗</div>
+                    <div class="gallery-content">
+                        <h3>Feedback Loops</h3>
+                        <p>System response and user anxiety</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interactive-section">
+                <h2>📝 Ecological Analysis</h2>
+                <p>Document usability issues using Gibson's ecological approach:</p>
+                <div style="display: grid; gap: 1rem; margin: 2rem 0;">
+                    <input type="text" id="everydayInput" placeholder="Describe an object and its affordances..." onkeypress="if(event.key==='Enter') saveEverydayExample()">
+                    <select id="affordanceType" style="max-width: 300px;">
+                        <option value="">Select affordance type...</option>
+                        <option value="perceived">Perceived Affordance</option>
+                        <option value="actual">Actual Affordance</option>
+                        <option value="false">False Affordance</option>
+                        <option value="hidden">Hidden Affordance</option>
+                    </select>
+                    <button class="btn" onclick="saveEverydayExample()" style="max-width: 200px;">Analyze</button>
+                </div>
+                
+                <div id="everydayList">
+                    <h4>Your Ecological Analysis:</h4>
+                    <ul id="examplesList" style="list-style: none; padding: 0;"></ul>
+                </div>
+            </div>
+
+            <div class="interactive-section">
+                <h3>🎯 Design Challenge: Error-Proofing</h3>
+                <div style="background: #fee2e2; padding: 2rem; border-radius: 10px; border-left: 5px solid var(--danger);">
+                    <h4>Poka-Yoke (Mistake-Proofing) Challenge</h4>
+                    <p><strong>Context:</strong> Hospital medication dispensing</p>
+                    <ul style="margin: 1rem 0 1rem 2rem;">
+                        <li>Similar packaging for different drugs</li>
+                        <li>No physical constraints on selection</li>
+                        <li>Confirmation dialogs ignored due to alarm fatigue</li>
+                    </ul>
+                    <p><strong>Apply constraints and affordances to redesign:</strong></p>
+                    <textarea id="parkingSolution" rows="4" placeholder="Describe your poka-yoke solution..." onblur="saveToStorage('poka_yoke_solution', this.value)"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 6: Reflection -->
+    <div id="reflection" class="page">
+        <div class="hero" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: var(--dark);">
+            <div class="hero-content">
+                <h1>Metacognitive Reflection</h1>
+                <p>Learning analytics and knowledge consolidation</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="reflection-form">
+                <h2>📊 Learning Analytics Dashboard</h2>
+                
+                <div class="metrics-grid" style="margin-bottom: 3rem;">
+                    <div class="metric-card">
+                        <div class="metric-value" id="finalTime">0:00</div>
+                        <div class="metric-label">Total Time</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="finalExperiments">0</div>
+                        <div class="metric-label">Experiments</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="finalDataPoints">0</div>
+                        <div class="metric-label">Data Points</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="completionRate">0%</div>
+                        <div class="metric-label">Completion</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Self-Assessment: Understanding of HCI Principles</label>
+                    <div class="rating" id="understandingRating">
+                        <span class="star" onclick="rate('understanding', 1)">⭐</span>
+                        <span class="star" onclick="rate('understanding', 2)">⭐</span>
+                        <span class="star" onclick="rate('understanding', 3)">⭐</span>
+                        <span class="star" onclick="rate('understanding', 4)">⭐</span>
+                        <span class="star" onclick="rate('understanding', 5)">⭐</span>
+                    </div>
+                    <input type="hidden" id="understandingScore">
+                </div>
+
+                <div class="form-group">
+                    <label>Which quantitative law was most surprising?</label>
+                    <select id="surprisingLaw" onchange="saveToStorage('surprising_law', this.value)">
+                        <option value="">Select...</option>
+                        <option value="fitts">Fitts's Law (Speed-Accuracy Tradeoff)</option>
+                        <option value="hicks">Hick's Law (Decision Time)</option>
+                        <option value="power">Power Law (Learning Curves)</option>
+                        <option value="gestalt">Gestalt Principles (Perception)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Apply HCI to your domain: How would you improve an interface you use daily?</label>
+                    <textarea id="applicationPlan" rows="4" onblur="saveToStorage('application_plan', this.value)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Critical Reflection: What are the limitations of applying cognitive psychology to design?</label>
+                    <textarea id="criticalReflection" rows="4" onblur="saveToStorage('critical_reflection', this.value)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Key Insights (3 bullet points):</label>
+                    <textarea id="takeaways" rows="4" placeholder="1. &#10;2. &#10;3. " onblur="saveToStorage('takeaways', this.value)"></textarea>
+                </div>
+
+                <button class="btn" onclick="generateSummary()" style="width: 100%; margin-bottom: 1rem;">Generate Comprehensive Report</button>
+            </div>
+
+            <div class="interactive-section" id="summarySection" style="display: none; margin-top: 2rem;">
+                <h2>📄 HCI Learning Report</h2>
+                <div id="summaryContent" style="background: #f8fafc; padding: 2rem; border-radius: 10px; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 0.9rem; line-height: 1.6;"></div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button class="btn" onclick="exportData()" style="flex: 1;">Export JSON</button>
+                    <button class="btn btn-secondary" onclick="exportCSV()" style="flex: 1;">Export CSV</button>
+                </div>
+            </div>
+
+            <div class="storage-panel" style="margin-top: 2rem;">
+                <h3>💾 Complete Data Log (LocalStorage)</h3>
+                <div id="completeDataLog"></div>
+                <button class="delete-btn" onclick="clearAllData()" style="margin-top: 1rem; width: 100%;">Clear All Research Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">Data recorded successfully!</div>
+
+    <script>
+        // Enhanced Storage System with Analytics
+        const storage = {
+            data: {},
+            sessionStart: Date.now(),
+            interactions: 0,
+            experiments: 0,
+            pagesVisited: new Set(['home']),
+            
+            init() {
+                const saved = localStorage.getItem('hciJourneyData');
+                if (saved) {
+                    this.data = JSON.parse(saved);
+                }
+                this.startTimer();
+                this.updateDisplay();
+                this.updateMetrics();
+            },
+            
+            save(key, value, metadata = {}) {
+                this.interactions++;
+                this.data[key] = {
+                    value: value,
+                    timestamp: new Date().toISOString(),
+                    sessionTime: Date.now() - this.sessionStart,
+                    ...metadata
+                };
+                localStorage.setItem('hciJourneyData', JSON.stringify(this.data));
+                this.showToast();
+                this.updateDisplay();
+                this.updateMetrics();
+            },
+            
+            get(key) {
+                return this.data[key]?.value;
+            },
+            
+            getAll() {
+                return this.data;
+            },
+            
+            clear() {
+                this.data = {};
+                this.interactions = 0;
+                this.experiments = 0;
+                localStorage.removeItem('hciJourneyData');
+                this.updateDisplay();
+                this.updateMetrics();
+            },
+            
+            showToast() {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            },
+            
+            updateDisplay() {
+                const display = document.getElementById('sessionData');
+                const log = document.getElementById('completeDataLog');
+                const list = document.getElementById('examplesList');
+                
+                if (Object.keys(this.data).length === 0) {
+                    if (display) display.innerHTML = 'No HCI data recorded. Run experiments to generate data.';
+                    if (log) log.innerHTML = 'No data stored.';
+                    return;
+                }
+                
+                let html = '';
+                for (const [key, item] of Object.entries(this.data)) {
+                    const time = new Date(item.timestamp).toLocaleTimeString();
+                    html += `
+                        <div class="storage-item">
+                            <span>
+                                <strong>${key}</strong>: ${typeof item.value === 'object' ? JSON.stringify(item.value) : item.value}<br>
+                                <small style="color:#94a3b8">${time} | Session: ${Math.round(item.sessionTime/1000)}s</small>
+                            </span>
+                            <button class="delete-btn" onclick="storage.delete('${key}')">Delete</button>
+                        </div>
+                    `;
+                }
+                
+                if (display) display.innerHTML = html;
+                if (log) log.innerHTML = html;
+                
+                if (list && this.data.everyday_examples) {
+                    const examples = JSON.parse(this.data.everyday_examples.value || '[]');
+                    list.innerHTML = examples.map(ex => `
+                        <li style="padding: 1rem; background: white; margin: 0.5rem 0; border-radius: 5px; border-left: 4px solid var(--primary);">
+                            <strong>${ex.type}:</strong> ${ex.text}
+                        </li>
+                    `).join('');
+                }
+            },
+            
+            updateMetrics() {
+                // Update all metric displays
+                const time = Math.round((Date.now() - this.sessionStart) / 1000);
+                const mins = Math.floor(time / 60);
+                const secs = time % 60;
+                const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+                
+                document.getElementById('timeSpent').textContent = timeStr;
+                document.getElementById('finalTime').textContent = timeStr;
+                document.getElementById('totalInteractions').textContent = this.interactions;
+                document.getElementById('experimentsRun').textContent = this.experiments;
+                document.getElementById('finalExperiments').textContent = this.experiments;
+                document.getElementById('finalDataPoints').textContent = Object.keys(this.data).length;
+                document.getElementById('pagesVisited').textContent = `${this.pagesVisited.size}/6`;
+                
+                const completion = Math.round((this.pagesVisited.size / 6) * 100);
+                document.getElementById('completionRate').textContent = `${completion}%`;
+            },
+            
+            startTimer() {
+                setInterval(() => this.updateMetrics(), 1000);
+            },
+            
+            delete(key) {
+                delete this.data[key];
+                localStorage.setItem('hciJourneyData', JSON.stringify(this.data));
+                this.updateDisplay();
+            },
+            
+            recordPageVisit(page) {
+                this.pagesVisited.add(page);
+                this.updateMetrics();
+            }
+        };
+
+        storage.init();
+
+        // Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === pageId) link.classList.add('active');
+            });
+            
+            const pages = ['home', 'principles', 'laws', 'casestudy', 'everyday', 'reflection'];
+            const index = pages.indexOf(pageId);
+            document.getElementById('progressBar').style.width = `${((index + 1) / pages.length) * 100}%`;
+            
+            window.scrollTo(0, 0);
+            storage.recordPageVisit(pageId);
+            
+            if (pageId === 'laws') initFittsExperiment();
+            loadSavedData();
+        }
+
+        // Tab System
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Visibility Demo
+        function updateVisibility(value) {
+            const display = document.getElementById('visibilityDisplay');
+            const text = document.getElementById('visibilityValue');
+            const controls = document.getElementById('switchControls');
+            const load = document.getElementById('cognitiveLoad');
+            
+            display.style.background = `rgba(0,0,0,${1 - value/100})`;
+            display.style.color = `rgba(255,255,255,${value/100})`;
+            controls.style.opacity = value/100;
+            text.textContent = value + '%';
+            
+            const loadPercent = 100 - value;
+            load.style.width = loadPercent + '%';
+            load.textContent = loadPercent + '%';
+            
+            if (loadPercent < 30) load.style.background = '#10b981';
+            else if (loadPercent < 70) load.style.background = '#f59e0b';
+            else load.style.background = '#ef4444';
+        }
+
+        // Feedback Demo
+        function showFeedback(type) {
+            const display = document.getElementById('feedbackDisplay');
+            const status = document.getElementById('systemStatus');
+            const visual = document.getElementById('feedbackVisual');
+            const startTime = Date.now();
+            
+            if (type === 'none') {
+                status.textContent = 'Unknown';
+                status.style.color = '#64748b';
+                visual.style.display = 'none';
+            } else if (type === 'visual') {
+                status.textContent = 'Processing...';
+                status.style.color = '#f59e0b';
+                setTimeout(() => {
+                    status.textContent = 'Completed';
+                    status.style.color = '#10b981';
+                    visual.style.display = 'block';
+                    visual.textContent = '✓ Visual Confirmation';
+                    visual.style.background = '#dcfce7';
+                    visual.style.color = '#166534';
+                }, 500);
+            } else {
+                status.textContent = 'Processing...';
+                status.style.color = '#f59e0b';
+                setTimeout(() => {
+                    status.textContent = 'Completed';
+                    status.style.color = '#10b981';
+                    visual.style.display = 'block';
+                    visual.innerHTML = '✓ Visual + Audio + Haptic<br><small>Beep! Vibration</small>';
+                    visual.style.background = '#dcfce7';
+                    if ('vibrate' in navigator) navigator.vibrate(200);
+                }, 300);
+            }
+            
+            const rt = Date.now() - startTime;
+            document.getElementById('responseTime').textContent = rt;
+            saveToStorage(`feedback_${type}`, rt);
+        }
+
+        // Consistency Check
+        function checkConsistency(btn, correct) {
+            const feedback = document.getElementById('consistencyFeedback');
+            feedback.style.display = 'block';
+            if (correct) {
+                feedback.style.background = '#dcfce7';
+                feedback.style.color = '#166534';
+                feedback.innerHTML = '✓ Correct! Submit buttons are conventionally placed on the right/bottom (reading direction) and use positive colors (green).';
+                storage.experiments++;
+            } else {
+                feedback.style.background = '#fee2e2';
+                feedback.style.color = '#991b1b';
+                feedback.innerHTML = '✗ Incorrect. This violates consistency with platform conventions and user expectations.';
+            }
+            storage.updateMetrics();
+        }
+
+        // Affordance Analysis
+        function analyzeAffordance(type) {
+            const result = document.getElementById('affordanceResult');
+            const analyses = {
+                chair: '<strong>Chair Affordances:</strong><br>• Perceived: Sitting (invites sitting by shape)<br>• Actual: Supporting weight, sitting<br>• False: Standing on seat (possible but not intended)<br>• Signifier: Seat height, backrest angle indicate "sit here"',
+                button: '<strong>Button Affordances:</strong><br>• Perceived: Pressing (raised surface suggests pushing)<br>• Actual: Activating circuit, triggering action<br>• False: Rotating (some buttons don\'t rotate)<br>• Signifier: Label text, color, shadow indicate action',
+                knob: '<strong>Knob Affordances:</strong><br>• Perceived: Rotating (shape implies turning)<br>• Actual: Adjusting value, controlling flow<br>• False: Pushing (unless it\'s a push-button knob)<br>• Signifier: Ridges for grip, pointer arrow indicate rotation',
+                text: '<strong>Text Field Affordances:</strong><br>• Perceived: Typing, entering text<br>• Actual: Accepting character input<br>• False: Clicking as button (unless styled confusingly)<br>• Signifier: Rectangular border, cursor on hover, placeholder text'
+            };
+            result.innerHTML = analyses[type];
+            result.style.display = 'block';
+            saveToStorage('affordance_analysis', type);
+        }
+
+        // Fitts's Law Experiment
+        let fittsData = [];
+        let fittsStartTime;
+        let fittsTrial = 0;
+
+        function initFittsExperiment() {
+            moveFittsTarget();
+        }
+
+        function moveFittsTarget() {
+            const container = document.getElementById('fittsContainer');
+            const target = document.getElementById('fittsTarget');
+            const maxX = container.clientWidth - 80;
+            const maxY = container.clientHeight - 80;
+            
+            target.style.left = Math.random() * maxX + 'px';
+            target.style.top = Math.random() * maxY + 'px';
+            
+            const sizes = [30, 50, 80];
+            const size = sizes[Math.floor(Math.random() * sizes.length)];
+            target.style.width = size + 'px';
+            target.style.height = size + 'px';
+            
+            fittsStartTime = Date.now();
+        }
+
+        function hitTarget() {
+            const mt = Date.now() - fittsStartTime;
+            const target = document.getElementById('fittsTarget');
+            const size = parseInt(target.style.width);
+            const distance = 200; // Approximate average distance
+            
+            const id = Math.log2((2 * distance) / size);
+            const tp = id / (mt / 1000);
+            
+            fittsData.push({ mt, id, size, tp });
+            fittsTrial++;
+            
+            document.getElementById('fittsMT').textContent = mt;
+            document.getElementById('fittsID').textContent = id.toFixed(2);
+            document.getElementById('fittsTP').textContent = tp.toFixed(2);
+            
+            target.classList.add('success');
+            setTimeout(() => target.classList.remove('success'), 200);
+            
+            saveToStorage(`fitts_trial_${fittsTrial}`, { mt, id, tp });
+            storage.experiments++;
+            storage.updateMetrics();
+            
+            moveFittsTarget();
+        }
+
+        function startFittsExperiment() {
+            fittsData = [];
+            fittsTrial = 0;
+            moveFittsTarget();
+        }
+
+        function exportFittsData() {
+            let csv = 'Trial,MT(ms),ID(bits),TP(bits/s),Size(px)\n';
+            fittsData.forEach((d, i) => {
+                csv += `${i+1},${d.mt},${d.id.toFixed(2)},${d.tp.toFixed(2)},${d.size}\n`;
+            });
+            downloadFile(csv, 'fitts-law-data.csv', 'text/csv');
+        }
+
+        // Hick's Law
+        let hickStartTime;
+        let hickCorrect;
+
+        function updateHickLaw(n) {
+            document.getElementById('hickN').textContent = n;
+            const predicted = 200 + 150 * Math.log2(n);
+            document.getElementById('predictedRT').textContent = Math.round(predicted);
+            generateHickGrid(n);
+        }
+
+        function generateHickGrid(n) {
+            const grid = document.getElementById('hicksGrid');
+            const cols = Math.ceil(Math.sqrt(n));
+            grid.style.setProperty('--cols', cols);
+            grid.innerHTML = '';
+            
+            hickCorrect = Math.floor(Math.random() * n);
+            for (let i = 0; i < n; i++) {
+                const item = document.createElement('div');
+                item.className = 'hicks-item';
+                item.textContent = i + 1;
+                item.onclick = () => selectHickItem(item, i === hickCorrect);
+                grid.appendChild(item);
+            }
+        }
+
+        function selectHickItem(item, correct) {
+            const rt = Date.now() - hickStartTime;
+            if (correct) {
+                item.classList.add('correct');
+                document.getElementById('actualRT').textContent = rt;
+                saveToStorage('hicks_law_rt', { n: parseInt(document.getElementById('hickN').textContent), rt });
+                storage.experiments++;
+                storage.updateMetrics();
+                setTimeout(() => startHickTest(), 1000);
+            } else {
+                item.classList.add('wrong');
+                setTimeout(() => item.classList.remove('wrong'), 500);
+            }
+        }
+
+        function startHickTest() {
+            hickStartTime = Date.now();
+            document.getElementById('currentChoices').textContent = document.getElementById('hickN').textContent;
+            generateHickGrid(parseInt(document.getElementById('hickN').textContent));
+        }
+
+        // Case Studies
+        function showCaseDetail(caseId) {
+            const details = {
+                apple: {
+                    title: 'Apple Macintosh (1984) - Direct Manipulation',
+                    content: 'First commercial GUI based on cognitive principles:<br>• <strong>Direct Manipulation:</strong> Objects represented visually<br>• <strong>Immediate Feedback:</strong> Dragging shows real-time movement<br>• <strong>Undo:</strong> Error recovery reduces anxiety<br>• <strong>Metaphors:</strong> Desktop, folders, trash can<br><br><strong>HCI Impact:</strong> Validated cognitive theory in commercial products.'
+                },
+                amazon: {
+                    title: 'Amazon 1-Click (1999) - Efficiency Optimization',
+                    content: 'Based on GOMS keystroke-level model:<br>• <strong>Task Reduction:</strong> Removed 5+ steps from purchase<br>• <strong>Working Memory:</strong> Eliminated need to remember cart contents<br>• <strong>Decision Points:</strong> Reduced cognitive load<br><br><strong>Result:</strong> Estimated $2.4B additional revenue annually.'
+                },
+                healthcare: {
+                    title: 'Medical Device Errors (2000s) - Safety-Critical Design',
+                    content: 'Therac-25 and similar cases:<br>• <strong>Mode Errors:</strong> Same control different functions<br>• <strong>Confirmation Bias:</strong> Users override warnings<br>• <strong>Alarm Fatigue:</strong> Too many alerts ignored<br><br><strong>Lesson:</strong> Usability is safety-critical; requires rigorous testing.'
+                },
+                iphone: {
+                    title: 'iPhone (2007) - Natural User Interfaces',
+                    content: 'Multi-touch eliminated abstraction:<br>• <strong>Direct Touch:</strong> No stylus/mouse indirection<br>• <strong>Gestures:</strong> Pinch, swipe match physical metaphors<br>• <strong>Immediate Response:</strong> 100ms touch feedback<br><br><strong>Paradigm Shift:</strong> From WIMP to NUI (Natural User Interface).'
+                },
+                modern: {
+                    title: 'AI Interfaces (2020s) - Explainable AI',
+                    content: 'LLM interaction challenges:<br>• <strong>Gulf of Evaluation:</strong> Can\'t see AI reasoning<br>• <strong>Uncertainty:</strong> Inconsistent outputs confuse mental models<br>• <strong>Automation Bias:</strong> Over-reliance on AI<br><br><strong>Challenge:</strong> How to make AI decisions inspectable?'
+                }
+            };
+            
+            const detail = details[caseId];
+            document.getElementById('caseDetail').style.display = 'block';
+            document.getElementById('caseTitle').innerText = detail.title;
+            document.getElementById('caseContent').innerHTML = detail.content;
+            document.getElementById('caseDetail').scrollIntoView({ behavior: 'smooth' });
+            saveToStorage('case_viewed', caseId);
+        }
+
+        function saveHeuristic(heuristic) {
+            saveToStorage(`heuristic_${heuristic}`, true);
+        }
+
+        function saveWalkthrough(step) {
+            saveToStorage(`walkthrough_step_${step}`, true);
+        }
+
+        // Everyday Examples
+        function saveEverydayExample() {
+            const input = document.getElementById('everydayInput');
+            const type = document.getElementById('affordanceType');
+            const value = input.value.trim();
+            if (!value || !type.value) {
+                alert('Please enter both description and affordance type');
+                return;
+            }
+            
+            let examples = [];
+            const existing = storage.get('everyday_examples');
+            if (existing) examples = JSON.parse(existing);
+            examples.push({ text: value, type: type.value, time: new Date().toISOString() });
+            storage.save('everyday_examples', JSON.stringify(examples));
+            input.value = '';
+            type.value = '';
+        }
+
+        // Gestalt
+        function showGestalt(principle) {
+            const explanations = {
+                proximity: 'Elements that are close together are perceived as a group. This is why paragraph spacing is crucial in readability.',
+                similarity: 'Elements that look similar are perceived as related. Color coding uses this principle for information architecture.'
+            };
+            document.getElementById('gestaltExplanation').textContent = explanations[principle];
+            document.getElementById('gestaltExplanation').style.display = 'block';
+        }
+
+        function hideGestalt() {
+            document.getElementById('gestaltExplanation').style.display = 'none';
+        }
+
+        // Reflection
+        function rate(category, score) {
+            const stars = document.querySelectorAll(`#${category}Rating .star`);
+            stars.forEach((star, index) => {
+                if (index < score) star.classList.add('active');
+                else star.classList.remove('active');
+            });
+            document.getElementById(`${category}Score`).value = score;
+            saveToStorage(`${category}_rating`, score);
+        }
+
+        function generateSummary() {
+            const data = storage.getAll();
+            let summary = `HUMAN-COMPUTER INTERACTION - LEARNING REPORT\n`;
+            summary += `Generated: ${new Date().toLocaleString()}\n`;
+            summary += `Session Duration: ${document.getElementById('finalTime').textContent}\n`;
+            summary += `Total Interactions: ${storage.interactions}\n`;
+            summary += `Experiments Completed: ${storage.experiments}\n`;
+            summary += `========================================\n\n`;
+            
+            summary += `SELF-ASSESSMENT:\n`;
+            summary += `• Understanding Rating: ${data.understanding_rating?.value || 'Not rated'}/5\n`;
+            summary += `• Surprising Law: ${data.surprising_law?.value || 'Not selected'}\n\n`;
+            
+            summary += `REFLECTION RESPONSES:\n`;
+            summary += `• Application Plan: ${data.application_plan?.value || 'Not provided'}\n`;
+            summary += `• Critical Reflection: ${data.critical_reflection?.value || 'Not provided'}\n`;
+            summary += `• Key Takeaways: ${data.takeaways?.value || 'Not provided'}\n\n`;
+            
+            summary += `EXPERIMENTAL DATA:\n`;
+            const experiments = Object.keys(data).filter(k => k.includes('fitts') || k.includes('hicks') || k.includes('feedback'));
+            experiments.forEach(key => {
+                summary += `• ${key}: ${JSON.stringify(data[key].value)}\n`;
+            });
+            
+            summary += `\n\nOBSERVATION DATA:\n`;
+            const observations = Object.keys(data).filter(k => !['understanding_rating', 'surprising_law', 'application_plan', 'critical_reflection', 'takeaways'].includes(k) && !experiments.includes(k));
+            observations.forEach(key => {
+                summary += `• ${key}: ${typeof data[key].value === 'object' ? JSON.stringify(data[key].value) : data[key].value}\n`;
+            });
+            
+            document.getElementById('summarySection').style.display = 'block';
+            document.getElementById('summaryContent').textContent = summary;
+            saveToStorage('report_generated', new Date().toISOString());
+        }
+
+        function exportData() {
+            const data = storage.getAll();
+            const exportObj = {
+                metadata: {
+                    exportDate: new Date().toISOString(),
+                    sessionDuration: document.getElementById('finalTime').textContent,
+                    totalInteractions: storage.interactions,
+                    experimentsCompleted: storage.experiments
+                },
+                data: data
+            };
+            downloadFile(JSON.stringify(exportObj, null, 2), 'hci-research-data.json', 'application/json');
+        }
+
+        function exportCSV() {
+            let csv = 'Key,Value,Timestamp,SessionTime(ms)\n';
+            const data = storage.getAll();
+            for (const [key, item] of Object.entries(data)) {
+                const value = typeof item.value === 'object' ? JSON.stringify(item.value).replace(/"/g, '""') : item.value;
+                csv += `"${key}","${value}","${item.timestamp}",${item.sessionTime}\n`;
+            }
+            downloadFile(csv, 'hci-data.csv', 'text/csv');
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearAllData() {
+            if (confirm('Clear all research data? This cannot be undone.')) {
+                storage.clear();
+                document.querySelectorAll('input, textarea, select').forEach(el => {
+                    if (el.type !== 'button' && el.type !== 'range') el.value = '';
+                });
+                document.querySelectorAll('.star').forEach(el => el.classList.remove('active'));
+                document.getElementById('summarySection').style.display = 'none';
+            }
+        }
+
+        function saveToStorage(key, value) {
+            storage.save(key, value);
+        }
+
+        function recordMetric(key, value) {
+            storage.save(key, value, { type: 'metric' });
+        }
+
+        function loadSavedData() {
+            const inputs = document.querySelectorAll('input[type="text"], textarea, select');
+            inputs.forEach(input => {
+                const saved = storage.get(input.id);
+                if (saved) input.value = saved;
+            });
+            
+            const rating = storage.get('understanding_rating');
+            if (rating) rate('understanding', parseInt(rating));
+        }
+
+        // Comparison Slider
+        let isDragging = false;
+        const slider = document.getElementById('sliderHandle');
+        const overlay = document.getElementById('goodDesign');
+        
+        if (slider) {
+            slider.addEventListener('mousedown', () => isDragging = true);
+            document.addEventListener('mouseup', () => isDragging = false);
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const container = document.getElementById('homeComparison');
+                const rect = container.getBoundingClientRect();
+                let x = e.clientX - rect.left;
+                x = Math.max(0, Math.min(x, rect.width));
+                const percent = (x / rect.width) * 100;
+                overlay.style.width = percent + '%';
+                slider.style.left = percent + '%';
+            });
+        }
+
+        // Initialize
+        window.onload = function() {
+            loadSavedData();
+            generateHickGrid(4);
+        };
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then((registration) => {
+                    console.log('Service Worker registered:', registration);
+                })
+                .catch((error) => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+
+        // Touch support for comparison slider
+        if (slider) {
+            slider.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            }, { passive: false });
+            
+            slider.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+            
+            slider.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const container = document.getElementById('homeComparison');
+                const rect = container.getBoundingClientRect();
+                let x = touch.clientX - rect.left;
+                x = Math.max(0, Math.min(x, rect.width));
+                const percent = (x / rect.width) * 100;
+                overlay.style.width = percent + '%';
+                slider.style.left = percent + '%';
+            }, { passive: false });
+        }
+    </script>
+</body>
+</html>
